@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI HTML Converter Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #a78bfa;
+            --accent: #f97316;
+            --bg-dark: #0f172a;
+            --bg-medium: #1e293b;
+            --bg-light: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(125deg, #6366f1 0%, #8b5cf6 25%, #ec4899 50%, #f97316 75%, #6366f1 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            opacity: 0.1;
+            z-index: -2;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        .orb1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .orb2 {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary);
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 5s;
+        }
+
+        .orb3 {
+            width: 250px;
+            height: 250px;
+            background: var(--accent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-50px, 50px) scale(0.9); }
+            75% { transform: translate(30px, 30px) scale(1.05); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        /* Main content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Glass panels */
+        .panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .panel-header i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .panel-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Code editor */
+        .code-editor {
+            position: relative;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-medium);
+            border-radius: 10px;
+        }
+
+        .editor-info {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        textarea {
+            width: 100%;
+            height: 500px;
+            background: var(--bg-medium);
+            border: 1px solid var(--bg-light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            color: var(--text-primary);
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        /* Preview */
+        .preview-container {
+            position: relative;
+            height: 500px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* Action buttons */
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn i {
+            font-size: 1.25rem;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Prompt type badges */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .type-badge i {
+            font-size: 1rem;
+        }
+
+        .type-badge.image {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            border: none;
+        }
+
+        .type-badge.video {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+        }
+
+        .type-badge.code {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+        }
+
+        /* Prompt Manager Section */
+        .prompt-section {
+            margin-top: 3rem;
+            animation: fadeInUp 1s ease 0.8s both;
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .prompt-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Search Box */
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .search-controls {
+                flex-direction: column;
+            }
+            
+            .search-box,
+            .filter-box {
+                width: 100%;
+            }
+        }
+
+        .search-controls .filter-box:not(:last-child) {
+            margin-right: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .search-controls .filter-box:not(:last-child) {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 3.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .clear-search:hover {
+            color: var(--text-primary);
+        }
+
+        .filter-box {
+            min-width: 200px;
+        }
+
+        .filter-box select {
+            width: 100%;
+            padding: 1rem 2rem 1rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cbd5e1' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1.5rem center;
+        }
+
+        .filter-box select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Style the dropdown options */
+        .filter-box select option,
+        .form-group select option {
+            background: var(--bg-medium);
+            color: var(--text-primary);
+            padding: 0.5rem;
+        }
+
+        .prompts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            min-height: 200px;
+        }
+
+        .prompt-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .prompt-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .prompt-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-right: 4rem;
+        }
+
+        .prompt-card h3 i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .ai-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        /* AI Platform specific colors */
+        .ai-badge.copilot {
+            background: linear-gradient(135deg, #0078d4, #40e0d0);
+            color: white;
+            border: none;
+        }
+
+        .ai-badge.gemini {
+            background: linear-gradient(135deg, #4285f4, #ea4335);
+            color: white;
+            border: none;
+        }
+
+        .ai-badge.chatgpt {
+            background: linear-gradient(135deg, #10a37f, #00897b);
+            color: white;
+            border: none;
+        }
+
+        .ai-badge.claude {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+        }
+
+        .ai-badge.meta {
+            background: linear-gradient(135deg, #0866ff, #1877f2);
+            color: white;
+            border: none;
+        }
+
+        .ai-badge.perplexity {
+            background: linear-gradient(135deg, #20b9c7, #1a9ba8);
+            color: white;
+            border: none;
+        }
+
+        .ai-badge.sora {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border: none;
+        }
+
+        .ai-badge.veo {
+            background: linear-gradient(135deg, #673ab7, #5e35b1);
+            color: white;
+            border: none;
+        }
+
+        .ai-badge.imagen {
+            background: linear-gradient(135deg, #fbbc04, #f9a825);
+            color: #333;
+            border: none;
+        }
+
+        .ai-badge.canvas {
+            background: linear-gradient(135deg, #e91e63, #d81b60);
+            color: white;
+            border: none;
+        }
+
+        .ai-badge.grok {
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            border: none;
+        }
+
+        .prompt-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .prompt-actions button {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        /* Modal for Add/Edit Prompt */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-medium);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideInUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--bg-light);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cbd5e1' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 3rem;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 200px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95rem;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        /* Loading animation */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--glass-border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Style all select elements and their options */
+        select {
+            background-color: var(--bg-medium) !important;
+            color: var(--text-primary) !important;
+        }
+
+        select option {
+            background-color: var(--bg-medium) !important;
+            color: var(--text-primary) !important;
+            padding: 0.5rem;
+        }
+
+        select option:hover {
+            background-color: var(--bg-light) !important;
+        }
+
+        /* Webkit browsers (Chrome, Safari) specific styling */
+        @media screen and (-webkit-min-device-pixel-ratio:0) {
+            select {
+                background-color: var(--bg-medium) !important;
+            }
+            
+            select option {
+                background-color: #1e293b !important;
+                color: #f1f5f9 !important;
+            }
+            
+            select option:checked {
+                background-color: #334155 !important;
+            }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+
+        /* Export/Import Section */
+        .export-import-section {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            text-align: center;
+            animation: fadeInUp 1s ease 1s both;
+        }
+
+        .export-import-header {
+            margin-bottom: 2rem;
+        }
+
+        .export-import-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .export-import-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .export-import-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .export-import-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .export-import-actions .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background orbs -->
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>AI HTML Converter Pro</h1>
+            <p>Transform AI-generated HTML into beautiful, ready-to-use content</p>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Code Editor Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-code"></i>
+                    <h2>HTML Input</h2>
+                </div>
+                <div class="code-editor">
+                    <div class="editor-toolbar">
+                        <div class="editor-info">
+                            <span><i class="fas fa-file-code"></i> <span id="charCount">0</span> characters</span>
+                            <span><i class="fas fa-list-ol"></i> <span id="lineCount">0</span> lines</span>
+                        </div>
+                        <button class="btn btn-sm" onclick="clearEditor()">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                    <textarea 
+                        id="htmlInput" 
+                        placeholder="Paste your AI-generated HTML code here..."
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-eye"></i>
+                    <h2>Live Preview</h2>
+                </div>
+                <div class="preview-container">
+                    <iframe id="preview" class="preview-frame"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <button class="btn btn-primary" onclick="downloadHTML()">
+                <i class="fas fa-download"></i> Download HTML
+            </button>
+            <button class="btn" onclick="printHTML()">
+                <i class="fas fa-print"></i> Print
+            </button>
+            <button class="btn" onclick="emailToGmail()">
+                <i class="fas fa-envelope"></i> Email to Gmail
+            </button>
+            <button class="btn" onclick="copyToClipboard()">
+                <i class="fas fa-copy"></i> Copy to Clipboard
+            </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <i class="fas fa-code"></i>
+                <h3 id="tagCount">0</h3>
+                <p>HTML Tags</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-file-alt"></i>
+                <h3 id="sizeKB">0 KB</h3>
+                <p>File Size</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <h3 id="lastUpdated">Never</h3>
+                <p>Last Updated</p>
+            </div>
+        </div>
+
+        <!-- Prompt Manager Section -->
+        <div class="prompt-section">
+            <div class="prompt-header">
+                <h2>AI Prompt Manager</h2>
+                <button class="btn btn-primary" onclick="showAddPromptModal()">
+                    <i class="fas fa-plus"></i> Add Prompt
+                </button>
+            </div>
+            <div class="search-container">
+                <div class="search-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input 
+                            type="text" 
+                            id="promptSearch" 
+                            placeholder="Search prompts by name or content..."
+                            onkeyup="searchPrompts()"
+                        >
+                        <button 
+                            id="clearSearch" 
+                            class="clear-search" 
+                            onclick="clearSearch()"
+                            style="display: none;"
+                        >
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="filter-box">
+                        <select id="aiFilter" onchange="filterByAI()">
+                            <option value="">All Platforms</option>
+                            <option value="canvas">Canvas</option>
+                            <option value="chatgpt">ChatGPT</option>
+                            <option value="claude">Claude</option>
+                            <option value="copilot">CoPilot</option>
+                            <option value="gemini">Gemini</option>
+                            <option value="grok">Grok</option>
+                            <option value="imagen">Imagen</option>
+                            <option value="meta">Meta</option>
+                            <option value="perplexity">Perplexity</option>
+                            <option value="sora">Sora</option>
+                            <option value="veo">Veo</option>
+                        </select>
+                    </div>
+                    <div class="filter-box">
+                        <select id="typeFilter" onchange="filterByType()">
+                            <option value="">All Types</option>
+                            <option value="image">Image Prompts</option>
+                            <option value="video">Video Prompts</option>
+                            <option value="code">Code Prompts</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="promptsContainer" class="prompts-grid">
+                <!-- Prompts will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Export/Import Section -->
+        <div class="export-import-section">
+            <div class="export-import-header">
+                <h2>Backup & Restore</h2>
+                <p>Export your prompts for backup or import previously saved prompts</p>
+            </div>
+            <div class="export-import-actions">
+                <button class="btn btn-primary" onclick="exportPrompts()">
+                    <i class="fas fa-download"></i> Export All Prompts
+                </button>
+                <button class="btn" onclick="document.getElementById('importFile').click()">
+                    <i class="fas fa-upload"></i> Import Prompts
+                </button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importPrompts(event)">
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Prompt Modal -->
+    <div id="promptModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Prompt</h3>
+                <button class="close-modal" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="promptForm" onsubmit="savePrompt(event)">
+                <div class="form-group">
+                    <label for="promptName">Prompt Name</label>
+                    <input type="text" id="promptName" required placeholder="Enter a descriptive name for your prompt">
+                </div>
+                <div class="form-group">
+                    <label for="aiSite">AI Platform</label>
+                    <select id="aiSite" required>
+                        <option value="">Select AI Platform</option>
+                        <option value="canvas">Canvas</option>
+                        <option value="chatgpt">ChatGPT</option>
+                        <option value="claude">Claude</option>
+                        <option value="copilot">CoPilot</option>
+                        <option value="gemini">Gemini</option>
+                        <option value="grok">Grok</option>
+                        <option value="imagen">Imagen</option>
+                        <option value="meta">Meta</option>
+                        <option value="perplexity">Perplexity</option>
+                        <option value="sora">Sora</option>
+                        <option value="veo">Veo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="promptType">Prompt Type</label>
+                    <select id="promptType" required>
+                        <option value="">Select Prompt Type</option>
+                        <option value="image">Image Prompt</option>
+                        <option value="video">Video Prompt</option>
+                        <option value="code">Code Prompt</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="promptContent">Prompt Content</label>
+                    <textarea id="promptContent" required placeholder="Paste your AI prompt here..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Prompt
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <!-- Loading spinner -->
+    <div id="loading" class="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        const htmlInput = document.getElementById('htmlInput');
+        const preview = document.getElementById('preview');
+        const charCount = document.getElementById('charCount');
+        const lineCount = document.getElementById('lineCount');
+        const tagCount = document.getElementById('tagCount');
+        const sizeKB = document.getElementById('sizeKB');
+        const lastUpdated = document.getElementById('lastUpdated');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const loading = document.getElementById('loading');
+        const promptModal = document.getElementById('promptModal');
+        const promptForm = document.getElementById('promptForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const promptName = document.getElementById('promptName');
+        const promptContent = document.getElementById('promptContent');
+        const aiSite = document.getElementById('aiSite');
+        const promptType = document.getElementById('promptType');
+        const promptsContainer = document.getElementById('promptsContainer');
+
+        // AI Platform display names
+        const aiPlatformNames = {
+            canvas: 'Canvas',
+            chatgpt: 'ChatGPT',
+            claude: 'Claude',
+            copilot: 'CoPilot',
+            gemini: 'Gemini',
+            grok: 'Grok',
+            imagen: 'Imagen',
+            meta: 'Meta',
+            perplexity: 'Perplexity',
+            sora: 'Sora',
+            veo: 'Veo'
+        };
+
+        // Prompt management
+        const PROMPTS_STORAGE_KEY = 'ai-prompts';
+        let prompts = [];
+        let editingPromptId = null;
+
+        // Load prompts from localStorage
+        function loadPrompts() {
+            const savedPrompts = localStorage.getItem(PROMPTS_STORAGE_KEY);
+            if (savedPrompts) {
+                prompts = JSON.parse(savedPrompts);
+                // Migrate old prompts without aiSite field
+                prompts = prompts.map(prompt => {
+                    if (!prompt.aiSite) {
+                        prompt.aiSite = 'chatgpt'; // Default to ChatGPT for old prompts
+                    }
+                    if (!prompt.type) {
+                        prompt.type = 'code'; // Default to code for old prompts
+                    }
+                    return prompt;
+                });
+                savePromptsToStorage();
+            }
+            renderPrompts();
+        }
+
+        // Save prompts to localStorage
+        function savePromptsToStorage() {
+            localStorage.setItem(PROMPTS_STORAGE_KEY, JSON.stringify(prompts));
+        }
+
+        // Render prompts
+        function renderPrompts(searchTerm = '', aiFilter = '', typeFilter = '') {
+            let filteredPrompts = prompts;
+
+            // Filter by search term
+            if (searchTerm) {
+                const lowerSearchTerm = searchTerm.toLowerCase();
+                filteredPrompts = filteredPrompts.filter(prompt => 
+                    prompt.name.toLowerCase().includes(lowerSearchTerm) ||
+                    prompt.content.toLowerCase().includes(lowerSearchTerm)
+                );
+            }
+
+            // Filter by AI platform
+            if (aiFilter) {
+                filteredPrompts = filteredPrompts.filter(prompt => prompt.aiSite === aiFilter);
+            }
+
+            // Filter by prompt type
+            if (typeFilter) {
+                filteredPrompts = filteredPrompts.filter(prompt => prompt.type === typeFilter);
+            }
+
+            // Sort by type first, then alphabetically by name
+            filteredPrompts.sort((a, b) => {
+                // First sort by type
+                const typeOrder = { 'image': 1, 'video': 2, 'code': 3 };
+                const typeCompare = (typeOrder[a.type] || 999) - (typeOrder[b.type] || 999);
+                if (typeCompare !== 0) return typeCompare;
+                // Then sort by name
+                return a.name.localeCompare(b.name);
+            });
+
+            if (filteredPrompts.length === 0) {
+                let emptyMessage = 'No prompts saved yet. Click "Add Prompt" to get started!';
+                if (searchTerm && aiFilter && typeFilter) {
+                    emptyMessage = `No ${typeFilter} prompts for ${aiPlatformNames[aiFilter]} found matching your search.`;
+                } else if (searchTerm && aiFilter) {
+                    emptyMessage = `No ${aiPlatformNames[aiFilter]} prompts found matching your search.`;
+                } else if (searchTerm && typeFilter) {
+                    emptyMessage = `No ${typeFilter} prompts found matching your search.`;
+                } else if (searchTerm) {
+                    emptyMessage = 'No prompts found matching your search.';
+                } else if (aiFilter && typeFilter) {
+                    emptyMessage = `No ${typeFilter} prompts for ${aiPlatformNames[aiFilter]} saved yet.`;
+                } else if (aiFilter) {
+                    emptyMessage = `No ${aiPlatformNames[aiFilter]} prompts saved yet.`;
+                } else if (typeFilter) {
+                    emptyMessage = `No ${typeFilter} prompts saved yet.`;
+                }
+                
+                promptsContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-${searchTerm || aiFilter ? 'search' : 'file-alt'}"></i>
+                        <p>${emptyMessage}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            promptsContainer.innerHTML = filteredPrompts.map(prompt => {
+                const typeIcons = {
+                    'image': 'fa-image',
+                    'video': 'fa-video',
+                    'code': 'fa-code'
+                };
+                const typeIcon = typeIcons[prompt.type] || 'fa-file-alt';
+                const typeLabel = prompt.type ? prompt.type.charAt(0).toUpperCase() + prompt.type.slice(1) : 'Code';
+                
+                return `
+                <div class="prompt-card">
+                    <span class="ai-badge ${prompt.aiSite}">${aiPlatformNames[prompt.aiSite] || prompt.aiSite}</span>
+                    <h3><i class="fas ${typeIcon}"></i> ${escapeHtml(prompt.name)}</h3>
+                    <div class="type-badge ${prompt.type || 'code'}">
+                        <i class="fas ${typeIcon}"></i> ${typeLabel} Prompt
+                    </div>
+                    <div class="prompt-actions">
+                        <button class="btn btn-sm" onclick="copyPrompt('${prompt.id}')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <button class="btn btn-sm" onclick="editPrompt('${prompt.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm" onclick="deletePrompt('${prompt.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // Search prompts
+        function searchPrompts() {
+            const searchInput = document.getElementById('promptSearch');
+            const clearButton = document.getElementById('clearSearch');
+            const searchTerm = searchInput.value.trim();
+            const aiFilter = document.getElementById('aiFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+
+            // Show/hide clear button
+            clearButton.style.display = searchTerm ? 'block' : 'none';
+
+            // Render filtered prompts
+            renderPrompts(searchTerm, aiFilter, typeFilter);
+        }
+
+        // Filter by AI platform
+        function filterByAI() {
+            searchPrompts();
+        }
+
+        // Filter by prompt type
+        function filterByType() {
+            searchPrompts();
+        }
+
+        // Clear search
+        function clearSearch() {
+            const searchInput = document.getElementById('promptSearch');
+            const clearButton = document.getElementById('clearSearch');
+            
+            searchInput.value = '';
+            clearButton.style.display = 'none';
+            searchPrompts();
+        }
+
+        // Show add prompt modal
+        function showAddPromptModal() {
+            editingPromptId = null;
+            modalTitle.textContent = 'Add New Prompt';
+            promptName.value = '';
+            promptContent.value = '';
+            aiSite.value = '';
+            promptType.value = '';
+            promptModal.classList.add('show');
+            
+            // Ensure modal is scrolled to top
+            setTimeout(() => {
+                const modalContent = promptModal.querySelector('.modal-content');
+                modalContent.scrollTop = 0;
+                // Focus on first input for better accessibility
+                promptName.focus();
+            }, 100);
+        }
+
+        // Show edit prompt modal
+        function editPrompt(id) {
+            const prompt = prompts.find(p => p.id === id);
+            if (!prompt) return;
+
+            editingPromptId = id;
+            modalTitle.textContent = 'Edit Prompt';
+            promptName.value = prompt.name;
+            promptContent.value = prompt.content;
+            aiSite.value = prompt.aiSite || '';
+            promptType.value = prompt.type || 'code';
+            promptModal.classList.add('show');
+            
+            // Ensure modal is scrolled to top
+            setTimeout(() => {
+                const modalContent = promptModal.querySelector('.modal-content');
+                modalContent.scrollTop = 0;
+                // Focus on first input for better accessibility
+                promptName.focus();
+            }, 100);
+        }
+
+        // Close modal
+        function closeModal() {
+            promptModal.classList.remove('show');
+            promptForm.reset();
+            editingPromptId = null;
+        }
+
+        // Save prompt
+        function savePrompt(event) {
+            event.preventDefault();
+
+            const name = promptName.value.trim();
+            const content = promptContent.value.trim();
+            const site = aiSite.value;
+            const type = promptType.value;
+
+            if (!name || !content || !site || !type) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (editingPromptId) {
+                // Update existing prompt
+                const index = prompts.findIndex(p => p.id === editingPromptId);
+                if (index !== -1) {
+                    prompts[index] = {
+                        id: editingPromptId,
+                        name,
+                        content,
+                        aiSite: site,
+                        type: type,
+                        updatedAt: new Date().toISOString()
+                    };
+                }
+            } else {
+                // Add new prompt
+                const newPrompt = {
+                    id: Date.now().toString(),
+                    name,
+                    content,
+                    aiSite: site,
+                    type: type,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                prompts.push(newPrompt);
+            }
+
+            savePromptsToStorage();
+            const searchTerm = document.getElementById('promptSearch').value.trim();
+            const aiFilter = document.getElementById('aiFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            renderPrompts(searchTerm, aiFilter, typeFilter);
+            closeModal();
+            showToast(editingPromptId ? 'Prompt updated successfully!' : 'Prompt saved successfully!');
+        }
+
+        // Copy prompt to clipboard
+        function copyPrompt(id) {
+            const prompt = prompts.find(p => p.id === id);
+            if (!prompt) return;
+
+            navigator.clipboard.writeText(prompt.content).then(() => {
+                showToast(`Copied "${prompt.name}" to clipboard!`);
+            }).catch(() => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = prompt.content;
+                textarea.style.position = 'fixed';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast(`Copied "${prompt.name}" to clipboard!`);
+                } catch (err) {
+                    showToast('Failed to copy prompt', 'error');
+                }
+                document.body.removeChild(textarea);
+            });
+        }
+
+        // Delete prompt
+        function deletePrompt(id) {
+            const prompt = prompts.find(p => p.id === id);
+            if (!prompt) return;
+
+            if (confirm(`Are you sure you want to delete "${prompt.name}"?`)) {
+                prompts = prompts.filter(p => p.id !== id);
+                savePromptsToStorage();
+                const searchTerm = document.getElementById('promptSearch').value.trim();
+                const aiFilter = document.getElementById('aiFilter').value;
+                const typeFilter = document.getElementById('typeFilter').value;
+                renderPrompts(searchTerm, aiFilter, typeFilter);
+                showToast('Prompt deleted');
+            }
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Update preview in real-time
+        htmlInput.addEventListener('input', () => {
+            updatePreview();
+            updateStats();
+        });
+
+        // Initial update
+        updateStats();
+        loadPrompts();
+
+        function updatePreview() {
+            const html = htmlInput.value;
+            const previewDoc = preview.contentDocument || preview.contentWindow.document;
+            
+            // Create a complete HTML document with proper styling
+            const fullHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            margin: 20px;
+                            background: #fff;
+                        }
+                        * {
+                            box-sizing: border-box;
+                        }
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                        }
+                        pre {
+                            background: #f4f4f4;
+                            padding: 10px;
+                            border-radius: 5px;
+                            overflow-x: auto;
+                        }
+                        code {
+                            background: #f4f4f4;
+                            padding: 2px 4px;
+                            border-radius: 3px;
+                        }
+                        table {
+                            border-collapse: collapse;
+                            width: 100%;
+                        }
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f4f4f4;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${html}
+                </body>
+                </html>
+            `;
+            
+            previewDoc.open();
+            previewDoc.write(fullHTML);
+            previewDoc.close();
+        }
+
+        function updateStats() {
+            const text = htmlInput.value;
+            
+            // Character and line count
+            charCount.textContent = text.length.toLocaleString();
+            lineCount.textContent = text.split('\n').length.toLocaleString();
+            
+            // Count HTML tags
+            const tagMatches = text.match(/<[^>]+>/g) || [];
+            tagCount.textContent = tagMatches.length.toLocaleString();
+            
+            // Calculate size in KB
+            const sizeInBytes = new Blob([text]).size;
+            const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+            sizeKB.textContent = `${sizeInKB} KB`;
+            
+            // Update timestamp
+            const now = new Date();
+            lastUpdated.textContent = now.toLocaleTimeString();
+        }
+
+        function clearEditor() {
+            if (confirm('Are you sure you want to clear all content?')) {
+                htmlInput.value = '';
+                updatePreview();
+                updateStats();
+                showToast('Content cleared');
+            }
+        }
+
+        function downloadHTML() {
+            const html = htmlInput.value;
+            if (!html.trim()) {
+                showToast('No HTML content to download', 'error');
+                return;
+            }
+
+            // Create complete HTML document
+            const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated HTML</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        img { max-width: 100%; height: auto; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+${html}
+</body>
+</html>`;
+
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai-generated-${Date.now()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showToast('HTML downloaded successfully!');
+        }
+
+        function printHTML() {
+            const html = htmlInput.value;
+            if (!html.trim()) {
+                showToast('No HTML content to print', 'error');
+                return;
+            }
+
+            const printWindow = window.open('', '_blank');
+            const fullHTML = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Print Preview</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 20px;
+        }
+        img { max-width: 100%; height: auto; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+        code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        @media print {
+            body { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+${html}
+</body>
+</html>`;
+            
+            printWindow.document.write(fullHTML);
+            printWindow.document.close();
+            
+            printWindow.onload = function() {
+                printWindow.print();
+                printWindow.close();
+            };
+            
+            showToast('Opening print dialog...');
+        }
+
+        function emailToGmail() {
+            const html = htmlInput.value;
+            if (!html.trim()) {
+                showToast('No HTML content to email', 'error');
+                return;
+            }
+
+            // Copy HTML to clipboard first
+            copyToClipboard(true);
+            
+            // Open Gmail compose
+            const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&tf=1';
+            window.open(gmailUrl, '_blank');
+            
+            showToast('HTML copied! Paste it into your Gmail compose window.');
+        }
+
+        function copyToClipboard(silent = false) {
+            const html = htmlInput.value;
+            if (!html.trim()) {
+                if (!silent) showToast('No HTML content to copy', 'error');
+                return;
+            }
+
+            // Create a temporary element to hold the formatted HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px';
+            document.body.appendChild(tempDiv);
+
+            // Select and copy
+            const range = document.createRange();
+            range.selectNodeContents(tempDiv);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            try {
+                document.execCommand('copy');
+                if (!silent) showToast('HTML copied to clipboard!');
+            } catch (err) {
+                // Fallback to copying plain text
+                navigator.clipboard.writeText(html).then(() => {
+                    if (!silent) showToast('HTML copied to clipboard!');
+                }).catch(() => {
+                    if (!silent) showToast('Failed to copy to clipboard', 'error');
+                });
+            }
+
+            // Clean up
+            selection.removeAllRanges();
+            document.body.removeChild(tempDiv);
+        }
+
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            const icon = toast.querySelector('i');
+            
+            if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle';
+                icon.style.color = '#ef4444';
+            } else {
+                icon.className = 'fas fa-check-circle';
+                icon.style.color = 'var(--primary)';
+            }
+            
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        downloadHTML();
+                        break;
+                    case 'p':
+                        e.preventDefault();
+                        printHTML();
+                        break;
+                    case 'c':
+                        if (e.shiftKey) {
+                            e.preventDefault();
+                            copyToClipboard();
+                        }
+                        break;
+                    case 'l':
+                        e.preventDefault();
+                        clearEditor();
+                        break;
+                }
+            }
+        });
+
+        // Auto-save to localStorage
+        const STORAGE_KEY = 'ai-html-converter-content';
+        
+        // Load saved content
+        const savedContent = localStorage.getItem(STORAGE_KEY);
+        if (savedContent) {
+            htmlInput.value = savedContent;
+            updatePreview();
+            updateStats();
+        }
+
+        // Save content on change
+        let saveTimeout;
+        htmlInput.addEventListener('input', () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                localStorage.setItem(STORAGE_KEY, htmlInput.value);
+            }, 1000);
+        });
+
+        // Handle paste event for better formatting
+        htmlInput.addEventListener('paste', (e) => {
+            setTimeout(() => {
+                updatePreview();
+                updateStats();
+            }, 10);
+        });
+
+        // Close modal when clicking outside
+        promptModal.addEventListener('click', (e) => {
+            if (e.target === promptModal) {
+                closeModal();
+            }
+        });
+
+        // Export prompts to JSON file
+        function exportPrompts() {
+            if (prompts.length === 0) {
+                showToast('No prompts to export', 'error');
+                return;
+            }
+
+            const exportData = {
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                promptCount: prompts.length,
+                prompts: prompts
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai-prompts-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            showToast(`Exported ${prompts.length} prompts successfully!`);
+        }
+
+        // Import prompts from JSON file
+        function importPrompts(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importData = JSON.parse(e.target.result);
+                    
+                    // Validate import data
+                    if (!importData.prompts || !Array.isArray(importData.prompts)) {
+                        showToast('Invalid import file format', 'error');
+                        return;
+                    }
+
+                    // Validate each prompt
+                    const validPrompts = importData.prompts.filter(prompt => {
+                        return prompt.id && prompt.name && prompt.content && prompt.aiSite;
+                    });
+
+                    if (validPrompts.length === 0) {
+                        showToast('No valid prompts found in import file', 'error');
+                        return;
+                    }
+
+                    // Ask user how to handle import
+                    const action = confirm(`Found ${validPrompts.length} prompts to import.\n\nClick OK to merge with existing prompts\nClick Cancel to replace all existing prompts`);
+
+                    if (action) {
+                        // Merge: Add imported prompts with new IDs to avoid conflicts
+                        const newPrompts = validPrompts.map(prompt => ({
+                            ...prompt,
+                            id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                            importedAt: new Date().toISOString()
+                        }));
+                        prompts = [...prompts, ...newPrompts];
+                        showToast(`Merged ${newPrompts.length} prompts successfully!`);
+                    } else {
+                        // Replace all
+                        prompts = validPrompts;
+                        showToast(`Replaced with ${validPrompts.length} prompts successfully!`);
+                    }
+
+                    savePromptsToStorage();
+                    renderPrompts();
+                    
+                } catch (error) {
+                    showToast('Error reading import file: ' + error.message, 'error');
+                }
+            };
+
+            reader.onerror = function() {
+                showToast('Error reading file', 'error');
+            };
+
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>
